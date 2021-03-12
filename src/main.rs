@@ -1,7 +1,7 @@
 #[allow(non_snake_case)]
 #[allow(dead_code)]
-mod apollo_vs_plan_1466E;
+mod painting_the_array_1479B2;
 
 fn main() {
-    apollo_vs_plan_1466E::main();
+    painting_the_array_1479B2::main();
 }

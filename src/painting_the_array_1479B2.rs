@@ -5,7 +5,7 @@ where
     <F as std::str::FromStr>::Err: std::fmt::Debug,
 {
     let mut nums_str = String::new();
-    r.read_line(&mut nums_str).unwrap();
+    r.read_line(&mut nums_str);
     let nums_vec: Vec<F> = nums_str
         .split_whitespace()
         .map(|x| x.parse::<F>().unwrap())
@@ -15,6 +15,7 @@ where
 
     nums_vec
 }
+
 fn read<F>(r: &mut BufReader<Stdin>) -> F
 where
     F: std::str::FromStr + Copy,
@@ -22,6 +23,7 @@ where
 {
     read_vec::<F>(r, 1)[0]
 }
+
 fn read_pair<F>(r: &mut BufReader<Stdin>) -> (F, F)
 where
     F: std::str::FromStr + Copy,
@@ -32,6 +34,7 @@ where
         [..] => unreachable!("Called read(u32) did not asserted the length of the input."),
     }
 }
+
 fn read_quadruple<F>(r: &mut BufReader<Stdin>) -> (F, F, F, F)
 where
     F: std::str::FromStr + Copy,
@@ -42,67 +45,66 @@ where
         [..] => unreachable!("Called read(u32) did not asserted the length of the input."),
     }
 }
-const MOD: u64 = 1000000007;
-const BITS: usize = 60;
 
-pub fn solve(r: &mut BufReader<Stdin>, pow_of_two: [u64; BITS]) {
-    let n = read::<usize>(r);
-    let X = read_vec::<u64>(r, n);
+fn contract(a: Vec<u32>) -> Vec<(u32, u32)> {
+    // Contracts a into segments consisting of same elements each.
+    // We are doing this by noting the length of each segment.
 
-    let mut number_bit_owners: [u64; BITS] = [0; BITS];
+    if a.len() == 0 {
+        return Vec::new();
+    }
 
-    for x in X.iter() {
-        for b in 0..BITS {
-            number_bit_owners[b] += is_set(*x, b);
+    let mut last = a[0];
+    let mut curr_length = 1;
+    let mut b = Vec::with_capacity(a.len());
+    // println!("{:?}", a);
+    for x in a.into_iter().skip(1) {
+        // println!("> {} {}", x, curr_length);
+        if x == last {
+            curr_length += 1;
+        } else {
+            b.push((last, curr_length));
+            curr_length = 1;
+            last = x;
         }
     }
 
-    for b in 0..BITS {
-        number_bit_owners[b] %= MOD;
-    }
-
-    // eprintln!("P: {:?}", P);
-    // eprintln!("B: {:?}", B);
-
-    #[inline]
-    fn is_not_set(x: u64, b: usize) -> u64 {
-        1 - is_set(x, b)
-    }
-
-    #[inline]
-    fn is_set(x: u64, b: usize) -> u64 {
-        (x >> b) & 1
-    }
-
-    let f = |j: usize| -> u64 {
-        (0..BITS)
-            .map(|b| (pow_of_two[b] * (n as u64 - is_not_set(X[j], b) * (n as u64 - number_bit_owners[b])) % MOD))
-            .sum::<u64>()
-            % MOD
-    };
-
-    let g = |j: usize| -> u64 {
-        (0..BITS)
-            .map(|b| (pow_of_two[b] * is_set(X[j], b) * number_bit_owners[b]) % MOD)
-            .sum::<u64>()
-            % MOD
-    };
-
-    println!("{}", (0..n).map(|j| f(j) * g(j) % MOD).sum::<u64>() % MOD)
+    b.push((last, curr_length));
+    b
 }
+
+
+pub fn solve(r: &mut BufReader<Stdin>) {
+    let n = read::<usize>(r);
+    let a = read_vec::<u32>(r, n);
+
+    let b = contract(a);
+
+    // println!("{:?}", b);
+
+    let mut c = Vec::<u32>::with_capacity(b.len());
+    for (x, l) in b.iter() {
+        if *l >= 2 {
+            if !c.is_empty() {
+                if c[c.len() - 1] != *x {
+                    c.push(*x);
+                }
+            } else {
+                c.push(*x);
+            }
+        }
+    }
+
+    println!("{}", b.len() + c.len());
+}
+
 pub fn main() {
-    const MULTI_TEST: bool = true;
+    const MULTI_TEST: bool = false;
     let r = &mut BufReader::new(std::io::stdin());
 
     let t = if MULTI_TEST { read::<u32>(r) } else { 1 };
 
-    // Compute P (power of two in modulus MOD)
-    let mut pow_of_two: [u64; BITS] = [1; BITS];
-    for i in 1..BITS {
-        pow_of_two[i] = 2 * pow_of_two[i - 1] % MOD;
-    }
-
     for _ in 0..t {
-        solve(r, pow_of_two);
+        solve(r);
     }
 }
