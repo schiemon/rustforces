@@ -1,7 +1,7 @@
 #[allow(non_snake_case)]
 #[allow(dead_code)]
-mod painting_the_array_1479B2;
+mod longest_simple_cycle_1476C;
 
 fn main() {
-    painting_the_array_1479B2::main();
+    longest_simple_cycle_1476C::main();
 }
