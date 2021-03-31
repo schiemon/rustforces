@@ -46,7 +46,7 @@ where
     }
 }
 
-pub fn solve(r: &mut BufReader<Stdin>) {}
+fn solve(r: &mut BufReader<Stdin>) {}
 
 pub fn main() {
     const MULTI_TEST: bool = false;

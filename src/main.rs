@@ -1,7 +1,7 @@
 #[allow(non_snake_case)]
 #[allow(dead_code)]
-mod road_reform_1468J;
+mod searching_local_minimum_1479A;
 
 fn main() {
-    road_reform_1468J::main();
+    searching_local_minimum_1479A::main();
 }
