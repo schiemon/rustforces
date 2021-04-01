@@ -73,7 +73,6 @@ fn contract(a: Vec<u32>) -> Vec<(u32, u32)> {
     b
 }
 
-
 pub fn solve(r: &mut BufReader<Stdin>) {
     let n = read::<usize>(r);
     let a = read_vec::<u32>(r, n);

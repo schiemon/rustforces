@@ -1,7 +1,7 @@
 #[allow(non_snake_case)]
 #[allow(dead_code)]
-mod searching_local_minimum_1479A;
+mod pairs_1463D;
 
 fn main() {
-    searching_local_minimum_1479A::main();
+    pairs_1463D::main();
 }

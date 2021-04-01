@@ -23,11 +23,51 @@ fn solve<B: std::io::BufRead, W: std::io::Write>(
     write: &mut std::io::BufWriter<W>,
 ) {
     let n = read.next::<usize>();
-    let mut A: Vec<u32> = Vec::with_capacity(n);
+    let mut B: Vec<u32> = Vec::with_capacity(n);
 
     for i in 0..n {
-        A.push(read.next::<u32>());
+        B.push(read.next::<u32>());
     }
+
+    let mut A = Vec::with_capacity(n);
+
+    let mut last = 0;
+    let mut cs = Vec::with_capacity(1 + n + 1);
+
+    // Get complement.
+    cs.push(0);
+    cs.extend(B.iter().cloned());
+    cs.push(2 * n as u32 + 1);
+    for i in 0..n + 1 {
+        A.extend(cs[i] + 1..cs[i + 1])
+    }
+
+    let mut limits = Vec::new();
+    for _ in 0..2 {
+        // Get max value for x.
+        let mut lo = 0;
+        let mut hi = n;
+
+        while lo < hi {
+            let x = lo + (hi - lo + 2 - 1) / 2;
+
+            if is_pairable(&B[..x], &A[n - x..]) {
+                lo = x;
+            } else {
+                hi = x - 1;
+            }
+        }
+
+        limits.push(lo); // Yeah, push them!
+        swap(&mut B, &mut A);
+    }
+
+    let hi = limits[0];
+    let lo = n - limits[1];
+
+    assert!(hi >= lo);
+
+    println!("{}", hi - lo + 1);
 }
 
 pub fn main() {
