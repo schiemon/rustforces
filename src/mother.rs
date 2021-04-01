@@ -75,17 +75,6 @@ impl<B: std::io::BufRead> Reader<B> {
             self.buf_iter = unsafe {
                 let slice = std::str::from_utf8_unchecked(&self.buf_str);
                 let split_slice = slice.split_whitespace();
-                /*
-                    Why do we have to use this ugly function here?
-                    Well, we want to buffer 'static strings in a SplitWhitespace member.
-                    We want them to be 'static because we want their lifetimes to be independent
-                    on the lifetime of the mutable self-reference provided in this method.
-                    This i nturn requires the lifetime of the self-reference to be at
-                    least as endurable as the reference to the SplitWhitespace object.
-                    This would be inpractical because we would not be able to use the mutable borrow twice as Rust
-                    would restrict us to at most one mutable 'static reference.
-                */
-
                 std::mem::transmute(split_slice)
             }
         }
