@@ -2,22 +2,18 @@
 #![allow(unused_variables)]
 #![allow(unused_mut)]
 
-use std::{
-    cmp::Reverse,
-    collections::{HashMap, HashSet},
-    process::exit,
-};
+use std::{cmp::Reverse, collections::HashMap};
 
 const MULTI_TEST: bool = true;
 
-fn cleanup(A: &Vec<u32>, remaining: &mut HashMap<u32, u32>) -> Option<Vec<(u32, u32)>> {
+fn cleanup(A: &Vec<u32>, rm: &mut HashMap<u32, u32>) -> Option<Vec<(u32, u32)>> {
     let mut x = A[0];
     let mut ops = Vec::new();
     for i in 1..A.len() {
         let a = A[i];
         let b = x - A[i];
 
-        let nindices_for_val_a = remaining.entry(a).or_insert(0);
+        let nindices_for_val_a = rm.entry(a).or_insert(0);
 
         if *nindices_for_val_a == 0 {
             continue; // Already taken. Skip it.
@@ -25,7 +21,7 @@ fn cleanup(A: &Vec<u32>, remaining: &mut HashMap<u32, u32>) -> Option<Vec<(u32, 
         // OK, we have to take it.
         *nindices_for_val_a -= 1;
 
-        let nindices_for_b = remaining.entry(b).or_insert(0);
+        let nindices_for_b = rm.entry(b).or_insert(0);
 
         // The complement must exist...
         if *nindices_for_b == 0 {
@@ -47,14 +43,14 @@ fn solve<B: std::io::BufRead, W: std::io::Write>(
     let mut A: Vec<u32> = read.next_vec::<u32>(2 * n);
     A.sort_by_key(|a| Reverse(*a));
 
-    let mut remaining = HashMap::<u32, u32>::with_capacity(2 * n - 1);
+    let mut rm = HashMap::<u32, u32>::with_capacity(2 * n - 1);
 
     // dbg!(&A, &remaining);
 
     for i in 1..2 * n {
         // Is there a method for it?
         for i in 1..2 * n {
-            *remaining.entry(A[i]).or_insert(0) += 1;
+            *rm.entry(A[i]).or_insert(0) += 1;
         }
         // OK, we combine the maximum with this element now. We delete it from the remaining set.
         // eprintln!(
@@ -64,9 +60,9 @@ fn solve<B: std::io::BufRead, W: std::io::Write>(
         //     remaining.get(&A[i]).unwrap()
         // );
 
-        *remaining.entry(A[i]).or_insert(0) -= 1;
+        *rm.entry(A[i]).or_insert(0) -= 1;
 
-        if let Some(mut ops) = cleanup(&A, &mut remaining) {
+        if let Some(mut ops) = cleanup(&A, &mut rm) {
             // Remember that the first operation was the selection of the maximum and the second element.
             ops.insert(0, (A[0], A[i]));
             println!("YES");
@@ -77,7 +73,7 @@ fn solve<B: std::io::BufRead, W: std::io::Write>(
             return;
         }
 
-        remaining.clear();
+        rm.clear();
     }
 
     println!("NO");
