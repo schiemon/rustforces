@@ -1,7 +1,7 @@
 #[allow(non_snake_case)]
 #[allow(dead_code)]
-mod pairs_1463D;
+mod going_home_1500A;
 
 fn main() {
-    pairs_1463D::main();
+    going_home_1500A::main();
 }

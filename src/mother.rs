@@ -2,20 +2,6 @@
 #![allow(unused_variables)]
 #![allow(unused_mut)]
 
-use std::mem::swap;
-
-fn is_pairable(A: &[u32], B: &[u32]) -> bool {
-    assert_eq!(A.len(), B.len());
-
-    for i in 0..A.len() {
-        if !(A[i] < B[i]) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 const MULTI_TEST: bool = true;
 
 fn solve<B: std::io::BufRead, W: std::io::Write>(
@@ -71,7 +57,7 @@ impl<B: std::io::BufRead> Reader<B> {
                 .read_until(b'\n', &mut self.buf_str)
                 .expect("Failed to read the next line.");
 
-            // Split the line into token and buffer them.
+            // Split the line into tokens and buffer them.
             self.buf_iter = unsafe {
                 let slice = std::str::from_utf8_unchecked(&self.buf_str);
                 let split_slice = slice.split_whitespace();

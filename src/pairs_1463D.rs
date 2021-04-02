@@ -111,7 +111,7 @@ impl<B: std::io::BufRead> Reader<B> {
                 .read_until(b'\n', &mut self.buf_str)
                 .expect("Failed to read the next line.");
 
-            // Split the line into token and buffer them.
+            // Split the line into tokens and buffer them.
             self.buf_iter = unsafe {
                 let slice = std::str::from_utf8_unchecked(&self.buf_str);
                 let split_slice = slice.split_whitespace();
