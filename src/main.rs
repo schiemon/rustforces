@@ -1,7 +1,7 @@
 #[allow(non_snake_case)]
 #[allow(dead_code)]
-mod array_destruction_1474C;
+mod fence_painting_1481C;
 
 fn main() {
-    array_destruction_1474C::main();
+    fence_painting_1481C::main();
 }
