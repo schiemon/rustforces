@@ -1,7 +1,7 @@
 #[allow(non_snake_case)]
 #[allow(dead_code)]
-mod fence_painting_1481C;
+mod busy_robot_1463C;
 
 fn main() {
-    fence_painting_1481C::main();
+    busy_robot_1463C::main();
 }
