@@ -2,6 +2,8 @@
 #![allow(unused_variables)]
 #![allow(unused_mut)]
 
+// -------------------------------------------------------------------------------------------------
+
 const MULTI_TEST: bool = true;
 
 fn solve<B: std::io::BufRead, W: std::io::Write>(
@@ -9,12 +11,11 @@ fn solve<B: std::io::BufRead, W: std::io::Write>(
     write: &mut std::io::BufWriter<W>,
 ) {
     let n = read.next::<usize>();
-    let mut A: Vec<u32> = Vec::with_capacity(n);
-
-    for i in 0..n {
-        A.push(read.next::<u32>());
-    }
+    let A = read.next_vec::<u32>(n);
+    let S = read.next_char_vec(); assert_eq!(S.len(), n);
 }
+
+// -------------------------------------------------------------------------------------------------
 
 pub fn main() {
     let (stdin, stdout) = (std::io::stdin(), std::io::stdout());
@@ -80,5 +81,10 @@ impl<B: std::io::BufRead> Reader<B> {
         let second = self.next();
 
         (first, second)
+    }
+
+    pub fn next_char_vec(&mut self) -> Vec<char> {
+        let s = self.next::<String>();
+        s.chars().collect()
     }
 }

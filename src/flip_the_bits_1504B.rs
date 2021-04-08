@@ -2,6 +2,8 @@
 #![allow(unused_variables)]
 #![allow(unused_mut)]
 
+// -------------------------------------------------------------------------------------------------
+
 const MULTI_TEST: bool = true;
 
 fn solve<B: std::io::BufRead, W: std::io::Write>(
@@ -69,6 +71,8 @@ fn solve<B: std::io::BufRead, W: std::io::Write>(
     });
 }
 
+// -------------------------------------------------------------------------------------------------
+
 pub fn main() {
     let (stdin, stdout) = (std::io::stdin(), std::io::stdout());
     let mut read = Reader::new(stdin.lock());
@@ -117,22 +121,6 @@ impl<B: std::io::BufRead> Reader<B> {
                 std::mem::transmute(split_slice)
             }
         }
-    }
-
-    pub fn next_vec<T: std::str::FromStr>(&mut self, n: usize) -> Vec<T> {
-        let mut v = Vec::with_capacity(n);
-        for _ in 0..n {
-            v.push(self.next());
-        }
-
-        v
-    }
-
-    pub fn next_pair<T: std::str::FromStr>(&mut self) -> (T, T) {
-        let first = self.next();
-        let second = self.next();
-
-        (first, second)
     }
 
     pub fn next_char_vec(&mut self) -> Vec<char> {
