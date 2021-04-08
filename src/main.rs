@@ -1,7 +1,8 @@
 #[allow(non_snake_case)]
 #[allow(dead_code)]
-mod busy_robot_1463C;
+mod flip_the_bits_1504B;
+mod mother; // To force the IDE to check this too.
 
 fn main() {
-    busy_robot_1463C::main();
+    flip_the_bits_1504B::main();
 }
