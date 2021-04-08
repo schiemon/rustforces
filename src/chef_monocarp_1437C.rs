@@ -13,6 +13,33 @@ fn solve<B: std::io::BufRead, W: std::io::Write>(
     write: &mut std::io::BufWriter<W>,
 ) {
     let n = read.next_token::<usize>();
+    // This T has nothing to do with the T in the problem statement.
+    // T[i + 1] := t_i
+    let mut T = read.next_vec::<u32>(n);
+    T.sort_unstable();
+
+    // dp[d][t] - Minimal unpleasant value possible while taking out the first d + 1 dishes between
+    // minute 0 and minute 2 * n - 1
+    // dp[d][0] = INF because this is not possible. It is used as a sentinel.
+    // dp[d][t] = min(dp[d][t], dp[d - 1][t - 1] + |T[d] - t|, dp[d][t - 1])
+
+    // dp[n - 1][2 * n - 1] is the answer.
+    let mut dp = vec![vec![INF; 2 * n]; n + 1];
+
+    // The sentinel dish does not generate costs at all.
+    for t in 0..2 * n {
+        dp[0][t] = 0;
+    }
+
+    for d in 1..=n {
+        for t in 1..2 * n {
+            dp[d][t] = dp[d][t]
+                .min(dp[d - 1][t - 1] + (T[d - 1] as i32 - t as i32).abs() as u32)
+                .min(dp[d][t - 1]);
+        }
+    }
+
+    println!("{}", dp[n][2 * n - 1]);
 }
 
 // -------------------------------------------------------------------------------------------------
