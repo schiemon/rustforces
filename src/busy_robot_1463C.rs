@@ -60,8 +60,7 @@ fn solve<B: std::io::BufRead, W: std::io::Write>(
             let next_time = C[i + 1].0 as i32;
             let pos_when_uninterrupted = my_pos + direction * (next_time - my_time as i32);
             if direction >= 0 {
-                next_pos = next_pos.min(pos_when_uninterrupted);
-            } else {
+                next_pos = next_pos.min(pos_when_uninterrupted); } else {
                 next_pos = next_pos.max(pos_when_uninterrupted);
             }
         }
@@ -114,7 +113,7 @@ impl<B: std::io::BufRead> Reader<B> {
         }
     }
 
-    pub fn next<T: std::str::FromStr>(&mut self) -> T {
+    fn next<T: std::str::FromStr>(&mut self) -> T {
         loop {
             if let Some(token) = self.buf_iter.next() {
                 return token.parse().ok().expect("Failed parse");
@@ -137,7 +136,7 @@ impl<B: std::io::BufRead> Reader<B> {
         }
     }
 
-    pub fn next_vec<T: std::str::FromStr>(&mut self, n: usize) -> Vec<T> {
+    fn next_vec<T: std::str::FromStr>(&mut self, n: usize) -> Vec<T> {
         let mut v = Vec::with_capacity(n);
         for _ in 0..n {
             v.push(self.next());
@@ -146,7 +145,7 @@ impl<B: std::io::BufRead> Reader<B> {
         v
     }
 
-    pub fn next_pair<U: std::str::FromStr, T: std::str::FromStr>(&mut self) -> (U, T) {
+    fn next_pair<U: std::str::FromStr, T: std::str::FromStr>(&mut self) -> (U, T) {
         let first = self.next();
         let second = self.next();
 

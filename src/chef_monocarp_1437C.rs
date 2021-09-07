@@ -5,15 +5,41 @@
 
 // -------------------------------------------------------------------------------------------------
 
-const MULTI_TEST: bool = false;
-
+const MULTI_TEST: bool = true;
 const INF: u32 = std::primitive::u32::MAX >> 1;
 
 fn solve<B: std::io::BufRead, W: std::io::Write>(
     read: &mut Reader<B>,
     write: &mut std::io::BufWriter<W>,
 ) {
-    // TODO: work
+    let n = read.next_token::<usize>();
+    // This T has nothing to do with the T in the problem statement.
+    // T[i + 1] := t_i
+    let mut T = read.next_vec::<u32>(n);
+    T.sort_unstable();
+
+    // dp[d][t] - Minimal unpleasant value possible while taking out the first d + 1 dishes between
+    // minute 0 and minute 2 * n - 1
+    // dp[d][0] = INF because this is not possible. It is used as a sentinel.
+    // dp[d][t] = min(dp[d][t], dp[d - 1][t - 1] + |T[d] - t|, dp[d][t - 1])
+
+    // dp[n - 1][2 * n - 1] is the answer.
+    let mut dp = vec![vec![INF; 2 * n]; n + 1];
+
+    // The sentinel dish does not generate costs at all.
+    for t in 0..2 * n {
+        dp[0][t] = 0;
+    }
+
+    for d in 1..=n {
+        for t in 1..2 * n {
+            dp[d][t] = dp[d][t]
+                .min(dp[d - 1][t - 1] + (T[d - 1] as i32 - t as i32).abs() as u32)
+                .min(dp[d][t - 1]);
+        }
+    }
+
+    println!("{}", dp[n][2 * n - 1]);
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -77,13 +103,6 @@ impl<B: std::io::BufRead> Reader<B> {
         v
     }
 
-    pub fn next_char_vec(&mut self, n: usize) -> Vec<char> {
-        let s = self.next::<String>();
-        let cv = s.chars().collect::<Vec<char>>();
-        assert_eq!(cv.len(), n);
-        cv
-    }
-
     pub fn next_pair<T: std::str::FromStr>(&mut self) -> (T, T) {
         let first = self.next_token();
         let second = self.next_token();
@@ -94,31 +113,5 @@ impl<B: std::io::BufRead> Reader<B> {
     pub fn next_char_vec(&mut self) -> Vec<char> {
         let s = self.next_token::<String>();
         s.chars().collect()
-    }
-}
-
-fn print_matrix<T: std::fmt::Display>(A: Vec<Vec<T>>) {
-    let n = A.len();
-    if n == 0 {
-        println!("[]");
-    } else {
-        let m = A[0].len();
-
-        let mut cell_width = 1;
-
-        for i in 0..n {
-            for j in 0..m {
-                cell_width = cell_width.max(format!("{}", A[i][j]).len());
-            }
-        }
-
-        cell_width += 2;
-
-        for i in 0..n {
-            for j in 0..m {
-                print!("{:>width$}", A[i][j], width = cell_width);
-            }
-            println!();
-        }
     }
 }

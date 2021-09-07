@@ -1,41 +1,81 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
 #![allow(unused_mut)]
-#![allow(non_snake_case)]
 
-// -------------------------------------------------------------------------------------------------
+use std::io::Write;
 
-const MULTI_TEST: bool = false;
+const MULTI_TEST: bool = true;
 
-const INF: u32 = std::primitive::u32::MAX >> 1;
+fn print_matrix<T: std::fmt::Display>(A: Vec<Vec<T>>) {
+    let n = A.len();
+    if n == 0 {
+        println!("[]");
+    } else {
+        let m = A[0].len();
+
+        let mut cell_width = 1;
+
+        for i in 0..n {
+            for j in 0..m {
+                cell_width = cell_width.max(format!("{}", A[i][j]).len());
+            }
+        }
+
+        cell_width += 2;
+
+        for i in 0..n {
+            for j in 0..m {
+                print!("{:>width$}", A[i][j], width = cell_width);
+            }
+            println!();
+        }
+    }
+}
 
 fn solve<B: std::io::BufRead, W: std::io::Write>(
     read: &mut Reader<B>,
     write: &mut std::io::BufWriter<W>,
 ) {
-    // TODO: work
+    let (a, b) = read.next_pair::<u64>();
+
+    // a is mex and b is xor
+    let mut xor_all = 0;
+
+    for x in 0..a {
+        xor_all ^= x;
+    }
+
+    write.write_fmt(format_args!("{}\n",
+                                 a + if xor_all == b {
+                                     0
+                                 } else if b ^ xor_all == a {
+                                     2
+                                 } else {
+                                     1
+                                 }
+    )).unwrap();
 }
 
-// -------------------------------------------------------------------------------------------------
-
-//noinspection Duplicates, RsRedundantElse
 pub fn main() {
     let (stdin, stdout) = (std::io::stdin(), std::io::stdout());
     let mut read = Reader::new(stdin.lock());
     let mut write = std::io::BufWriter::new(stdout.lock());
 
-    let t = if MULTI_TEST { read.next_token::<u32>() } else { 1 };
+    let t = if MULTI_TEST { read.next::<u32>() } else { 1 };
 
     for _ in 0..t {
         solve(&mut read, &mut write);
     }
+
+    write.flush().unwrap();
 }
+
 pub struct Reader<B> {
     reader: B,
     buf_str: Vec<u8>,
     buf_iter: std::str::SplitWhitespace<'static>,
 }
-//noinspection Duplicates
+
 impl<B: std::io::BufRead> Reader<B> {
     pub fn new(reader: B) -> Self {
         Self {
@@ -45,7 +85,7 @@ impl<B: std::io::BufRead> Reader<B> {
         }
     }
 
-    pub fn next_token<T: std::str::FromStr>(&mut self) -> T {
+    pub fn next<T: std::str::FromStr>(&mut self) -> T {
         loop {
             if let Some(token) = self.buf_iter.next() {
                 return token.parse().ok().expect("Failed parse");
@@ -71,7 +111,7 @@ impl<B: std::io::BufRead> Reader<B> {
     pub fn next_vec<T: std::str::FromStr>(&mut self, n: usize) -> Vec<T> {
         let mut v = Vec::with_capacity(n);
         for _ in 0..n {
-            v.push(self.next_token());
+            v.push(self.next());
         }
 
         v
@@ -85,40 +125,9 @@ impl<B: std::io::BufRead> Reader<B> {
     }
 
     pub fn next_pair<T: std::str::FromStr>(&mut self) -> (T, T) {
-        let first = self.next_token();
-        let second = self.next_token();
+        let first = self.next();
+        let second = self.next();
 
         (first, second)
-    }
-
-    pub fn next_char_vec(&mut self) -> Vec<char> {
-        let s = self.next_token::<String>();
-        s.chars().collect()
-    }
-}
-
-fn print_matrix<T: std::fmt::Display>(A: Vec<Vec<T>>) {
-    let n = A.len();
-    if n == 0 {
-        println!("[]");
-    } else {
-        let m = A[0].len();
-
-        let mut cell_width = 1;
-
-        for i in 0..n {
-            for j in 0..m {
-                cell_width = cell_width.max(format!("{}", A[i][j]).len());
-            }
-        }
-
-        cell_width += 2;
-
-        for i in 0..n {
-            for j in 0..m {
-                print!("{:>width$}", A[i][j], width = cell_width);
-            }
-            println!();
-        }
     }
 }
