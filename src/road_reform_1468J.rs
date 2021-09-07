@@ -117,7 +117,6 @@ fn solve(r: &mut BufReader<Stdin>) {
     let mst = mst_prim(n, &g);
     // eprintln!("{:?}", mst);
     let acc_cost_for_too_fast = mst.iter().map(|(_, _, c)| *c as u64).sum::<u64>();
-
     if acc_cost_for_too_fast == 0 {
         println!("{}", mn_diff);
     } else {

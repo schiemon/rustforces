@@ -1,7 +1,8 @@
 #[allow(non_snake_case)]
 #[allow(dead_code)]
-mod busy_robot_1463C;
+
+mod non_decreasing_dilemma_1567E;
 
 fn main() {
-    busy_robot_1463C::main();
+    non_decreasing_dilemma_1567E::main();
 }

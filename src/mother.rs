@@ -2,18 +2,39 @@
 #![allow(unused_variables)]
 #![allow(unused_mut)]
 
-const MULTI_TEST: bool = true;
+const MULTI_TEST: bool = false;
+
+fn print_matrix<T: std::fmt::Display>(A: Vec<Vec<T>>) {
+    let n = A.len();
+    if n == 0 {
+        println!("[]");
+    } else {
+        let m = A[0].len();
+
+        let mut cell_width = 1;
+
+        for i in 0..n {
+            for j in 0..m {
+                cell_width = cell_width.max(format!("{}", A[i][j]).len());
+            }
+        }
+
+        cell_width += 2;
+
+        for i in 0..n {
+            for j in 0..m {
+                print!("{:>width$}", A[i][j], width = cell_width);
+            }
+            println!();
+        }
+    }
+}
 
 fn solve<B: std::io::BufRead, W: std::io::Write>(
     read: &mut Reader<B>,
     write: &mut std::io::BufWriter<W>,
 ) {
     let n = read.next::<usize>();
-    let mut A: Vec<u32> = Vec::with_capacity(n);
-
-    for i in 0..n {
-        A.push(read.next::<u32>());
-    }
 }
 
 pub fn main() {
@@ -73,6 +94,13 @@ impl<B: std::io::BufRead> Reader<B> {
         }
 
         v
+    }
+
+    pub fn next_char_vec(&mut self, n: usize) -> Vec<char> {
+        let s = self.next::<String>();
+        let cv = s.chars().collect::<Vec<char>>();
+        assert_eq!(cv.len(), n);
+        cv
     }
 
     pub fn next_pair<T: std::str::FromStr>(&mut self) -> (T, T) {
