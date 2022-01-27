@@ -1,8 +1,8 @@
 #[allow(non_snake_case)]
 #[allow(dead_code)]
 
-mod non_decreasing_dilemma_1567E;
+mod not_sitting_1627B;
 
 fn main() {
-    non_decreasing_dilemma_1567E::main();
+    not_sitting_1627B::main();
 }
